@@ -1,7 +1,10 @@
 import express from "express";
 const router = express.Router();
-import { HealthCheck } from "../controllers/main";
+import { getAllUsers, login, register } from '../controllers/user.controller'
 
-router.get("/check", HealthCheck);
+router.get("/users", getAllUsers);
+router.post("/login", login);
+router.post("/register", register);
+
 
 export default router;
