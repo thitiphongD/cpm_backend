@@ -1,5 +1,36 @@
 import { Request, Response } from "express";
 import pool from '../db/connection'
+import dotenv from "dotenv";
+dotenv.config();
+
+export const coinMarketCapAPI = async (req: Request, res: Response) => {
+    const apiUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
+    const apiKey = process.env.CMC_API_KEY;
+
+    if (!apiKey) {
+        console.error('API key not found in env');
+        return res.status(500).json({ error: 'API key not found' });
+    }
+
+    try {
+        const response = await fetch(apiUrl, {
+            headers: {
+                'X-CMC_PRO_API_KEY': apiKey,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from CoinMarketCap API');
+        }
+
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetch data from CoinMarketCap API:', error);
+        res.status(500).json({ error: 'Failed to fetch data from CoinMarketCap API' });
+    }
+};
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
@@ -28,7 +59,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     try {
         // Check if username already exists
-
         if (password !== confirmPassword) {
             res.status(400).json({ error: 'Passwords do not match' });
             return;
@@ -65,7 +95,7 @@ export const getPortfolio = async (req: Request, res: Response): Promise<void> =
     const username = req.body.username;
     try {
         const query = {
-            text: 'SELECT * FROM users WHERE username = $1',
+            text: 'SELECT username FROM users WHERE username = $1',
             values: [username],
         };
         const result = await pool.query(query);
