@@ -33,7 +33,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ error: 'Passwords do not match' });
             return;
         }
-        
+
         const checkQuery = {
             text: 'SELECT * FROM users WHERE username = $1',
             values: [username],
@@ -58,6 +58,25 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: 'Failed to register user' });
+    }
+};
+
+export const getPortfolio = async (req: Request, res: Response): Promise<void> => {
+    const username = req.body.username;
+    try {
+        const query = {
+            text: 'SELECT * FROM users WHERE username = $1',
+            values: [username],
+        };
+        const result = await pool.query(query);
+
+        res.status(200).json({
+            data: result.rows,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: 'Failed to fetch users',
+        });
     }
 };
 
