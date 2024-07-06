@@ -7,11 +7,7 @@ const app = express();
 initDatabase();
 const port = 8080;
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-)
+app.use(express.json());
 
 app.use("/", mainRoute);
 app.use("/api", userRoute);
