@@ -1,8 +1,16 @@
 import express from "express";
 import mainRoute from "./routes/mainRoute";
-
+import bodyParser from 'body-parser'
+import { initDatabase } from "./db";
 const app = express();
+initDatabase();
 const port = 8080;
+
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
 
 app.use("/", mainRoute);
 

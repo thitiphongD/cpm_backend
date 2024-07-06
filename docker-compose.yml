@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: yellow_user
+      POSTGRES_PASSWORD: yellow_pass
+      POSTGRES_DB: yellow
+    ports:
+      - ":5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
