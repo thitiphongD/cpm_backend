@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import pool from '../db/connection'
-interface PortfolioData {
+export interface PortfolioData {
     id: number;
     name: string;
     symbol: string;
@@ -9,7 +9,9 @@ interface PortfolioData {
     percent_change_1h: number;
     percent_change_24h: number;
     percent_change_7d: number;
-    quantity: string;
+    volume_24h: number;
+    market_cap: number;
+    quantity: number;
     amount: number;
 }
 
@@ -25,7 +27,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         if (result.rows.length === 1) {
             const user = result.rows[0];
             if (user.password === password) {
-                res.status(200).json({ message: 'Login successful', username: result.rows[0].username });
+                res.status(200).json({ message: 'Login success', username: result.rows[0].username });
             } else {
                 res.status(401).json({ error: 'user or password incorrect' });
             }
@@ -41,12 +43,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const { username, password, confirmPassword } = req.body;
 
     try {
-        // Check if username already exists
         if (password !== confirmPassword) {
             res.status(400).json({ error: 'Passwords do not match' });
             return;
         }
-
         const checkQuery = {
             text: 'SELECT * FROM users WHERE username = $1',
             values: [username],
@@ -54,19 +54,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         const checkResult = await pool.query(checkQuery);
 
         if (checkResult.rows.length > 0) {
-            // Username already exists
             res.status(400).json({ error: 'Username already exists' });
             return;
         }
-
-        // Insert new user into database
         const insertQuery = {
             text: 'INSERT INTO users (username, password) VALUES ($1, $2)',
             values: [username, password],
         };
         await pool.query(insertQuery);
-
-        // Registration successful
         res.status(201).json({ message: 'User register success' });
     } catch (error) {
         console.error('Registration error:', error);
@@ -105,7 +100,9 @@ export const getPortfolio = async (req: Request, res: Response): Promise<void> =
                 percent_change_1h: coinData.quote['USD'].percent_change_1h,
                 percent_change_24h: coinData.quote['USD'].percent_change_24h,
                 percent_change_7d: coinData.quote['USD'].percent_change_7d,
-                quantity: row.quantity,
+                volume_24h: coinData.quote['USD'].volume_24h,
+                market_cap: coinData.quote['USD'].market_cap,
+                quantity: parseFloat(row.quantity),
                 amount: amount
             };
         });
