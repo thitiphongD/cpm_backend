@@ -4,63 +4,6 @@ import dotenv from "dotenv";
 dotenv.config();
 const apiKey = process.env.CMC_API_KEY;
 
-export const coinMarketCapAPI = async (req: Request, res: Response) => {
-    const apiUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
-
-    if (!apiKey) {
-        console.error('API key not found in env');
-        return res.status(500).json({ error: 'API key not found' });
-    }
-
-    try {
-        const response = await fetch(apiUrl, {
-            headers: {
-                'X-CMC_PRO_API_KEY': apiKey,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch data from CoinMarketCap API');
-        }
-
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetch data from CoinMarketCap API:', error);
-        res.status(500).json({ error: 'Failed to fetch data from CoinMarketCap API' });
-    }
-};
-
-export const getCoin = async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    console.log('Requested cryptocurrency ID:', id);
-
-    const apiUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
-
-    if (!id) {
-        console.error('API key not found in env');
-        return res.status(500).json({ error: 'coin not found' }); 
-    }
-
-    if (!apiKey) {
-        console.error('API key not found in env');
-        return res.status(500).json({ error: 'API key not found' });
-    }
-    const url = `${apiUrl}?id=${id}`;
-    const response = await fetch(url, {
-        headers: {
-            'X-CMC_PRO_API_KEY': apiKey,
-            'Accept': 'application/json'
-        }
-    });
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
-    res.json(data);
-}
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
@@ -71,15 +14,17 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         };
 
         const result = await pool.query(query);
-        if (result.rows.length > 0) {
-            // Authentication successful
-            res.status(200).json({ message: 'Login successful' });
+        if (result.rows.length === 1) {
+            const user = result.rows[0];
+            if (user.password === password) {
+                res.status(200).json({ message: 'Login successful', username: result.rows[0].username });
+            } else {
+                res.status(401).json({ error: 'user or password incorrect' });
+            }
         } else {
-            // Authentication failed
-            res.status(401).json({ error: 'Invalid credentials' });
+            res.status(401).json({ error: 'user or password incorrect' });
         }
     } catch (error) {
-        console.error('Login error:', error);
         res.status(500).json({ error: 'Failed to login' });
     }
 }
@@ -125,7 +70,7 @@ export const getPortfolio = async (req: Request, res: Response): Promise<void> =
     const username = req.body.username;
     try {
         const query = {
-            text: 'SELECT username FROM users WHERE username = $1',
+            text: 'SELECT u.username, p.crypto_id, p.quantity FROM users u JOIN portfolio p ON u.id = p.user_id WHERE u.username = $1',
             values: [username],
         };
         const result = await pool.query(query);

@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
-import { coinMarketCapAPI, getAllUsers, getCoin, getPortfolio, login, register } from '../controllers/user.controller'
+import { getAllUsers, getPortfolio, login, register } from '../controllers/user.controller'
+import { coinMarketCapAPI, getCoin } from '../controllers/coin.controller'
 
 router.get("/users", getAllUsers);
 router.post("/login", login);
