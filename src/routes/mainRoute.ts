@@ -6,7 +6,7 @@ import { coinMarketCapAPI, getCoin, getCoinsByUser } from '../controllers/coin.c
 router.get("/users", getAllUsers);
 router.post("/login", login);
 router.post("/register", register);
-router.get("/portfolio", getPortfolio)
+router.get("/portfolio/:username", getPortfolio)
 router.get("/coin-list", coinMarketCapAPI)
 router.get("/coin/:id", getCoin)
 router.get("/coins/:ids", getCoinsByUser);

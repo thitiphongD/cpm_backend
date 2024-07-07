@@ -1,5 +1,17 @@
 import { Request, Response } from "express";
 import pool from '../db/connection'
+interface PortfolioData {
+    id: number;
+    name: string;
+    symbol: string;
+    cmc_rank: number;
+    price: number;
+    percent_change_1h: number;
+    percent_change_24h: number;
+    percent_change_7d: number;
+    quantity: string;
+    amount: number;
+}
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
@@ -63,7 +75,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const getPortfolio = async (req: Request, res: Response): Promise<void> => {
-    const username = req.body.username;
+    const username = req.params.username;
     try {
         const query = {
             text: 'SELECT u.username, p.crypto_id, p.quantity FROM users u JOIN portfolio p ON u.id = p.user_id WHERE u.username = $1',
@@ -78,10 +90,28 @@ export const getPortfolio = async (req: Request, res: Response): Promise<void> =
         if (!coinsResponse.ok) {
             throw new Error('Failed to fetch coin data');
         }
-        const coinsData = await coinsResponse.json();
-        
+        const resultCoins = await coinsResponse.json();
+
+        const mergeData: PortfolioData[] = result.rows.map(row => {
+            const coinData = resultCoins.data[row.crypto_id];
+            const price = resultCoins.data[row.crypto_id].quote['USD'].price;
+            const amount = parseFloat(row.quantity) * resultCoins.data[row.crypto_id].quote['USD'].price;;
+            return {
+                id: row.crypto_id,
+                name: coinData.name,
+                symbol: coinData.symbol,
+                cmc_rank: coinData.cmc_rank,
+                price: price,
+                percent_change_1h: coinData.quote['USD'].percent_change_1h,
+                percent_change_24h: coinData.quote['USD'].percent_change_24h,
+                percent_change_7d: coinData.quote['USD'].percent_change_7d,
+                quantity: row.quantity,
+                amount: amount
+            };
+        });
+
         res.status(200).json({
-            data: coinsData,
+            data: mergeData
         });
     } catch (error) {
         res.status(500).json({
