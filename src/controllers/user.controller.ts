@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
 import pool from '../db/connection'
-import dotenv from "dotenv";
-dotenv.config();
-const apiKey = process.env.CMC_API_KEY;
-
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
@@ -75,8 +71,17 @@ export const getPortfolio = async (req: Request, res: Response): Promise<void> =
         };
         const result = await pool.query(query);
 
+        const cryptoIds = result.rows.map(row => row.crypto_id).join(',');
+
+        const coinsResponse = await fetch(`http://localhost:8080/coins/${cryptoIds}`);
+
+        if (!coinsResponse.ok) {
+            throw new Error('Failed to fetch coin data');
+        }
+        const coinsData = await coinsResponse.json();
+        
         res.status(200).json({
-            data: result.rows,
+            data: coinsData,
         });
     } catch (error) {
         res.status(500).json({
