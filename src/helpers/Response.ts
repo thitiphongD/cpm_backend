@@ -2,7 +2,7 @@ import { type Response } from "express";
 
 export const sendLoginSuccess = (res: Response, username: string) => {
   res.status(200).json({
-    message: "Login successful",
+    message: "Login success",
     username: username,
   });
 };
@@ -12,5 +12,5 @@ export const sendLoginFail = (res: Response) => {
 };
 
 export const sendServerError = (res: Response) => {
-  res.status(500).json({ error: "An error occurred during login" });
+  res.status(500).json({ error: "Server error" });
 };
