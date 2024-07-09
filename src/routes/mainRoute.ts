@@ -17,6 +17,7 @@ router.get("/users", GetAllUsers);
 router.post("/login", Login);
 router.post("/register", Register);
 router.get("/portfolio/:username", GetPortfolio);
+
 router.get("/coin-list", CoinMarketCapAPI);
 router.get("/coin/:id", GetCoin);
 router.get("/coins/:ids", GetCoinsByUser);

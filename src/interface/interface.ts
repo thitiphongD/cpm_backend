@@ -3,6 +3,12 @@ export interface UserLogin {
   password: string;
 }
 
+export interface UserRegister {
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export interface PortfolioData {
   id: number;
   name: string;
@@ -17,3 +23,5 @@ export interface PortfolioData {
   quantity: number;
   amount: number;
 }
+
+

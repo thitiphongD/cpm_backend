@@ -1,10 +1,11 @@
 import express, { type Express } from "express";
 import mainRoute from "./routes/mainRoute";
 import { initDatabase } from "./db/connection";
-// import { initDatabase } from "./db";
+import dotenv from "dotenv";
 import cors from "cors";
+dotenv.config();
 const app: Express = express();
-const port = 8080;
+const port = process.env.SERVER_PORT;
 app.use(express.json());
 app.use(cors());
 
