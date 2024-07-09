@@ -12,7 +12,6 @@ import {
     userAlreadyExists,
 } from "../helpers/Response";
 import { ErrorType } from "../types/ErrorTypes";
-import { BASE_URL } from "../config";
 
 export const LoginController = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
