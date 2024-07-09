@@ -3,8 +3,8 @@ const router = express.Router();
 import {
   GetAllUsers,
   GetPortfolio,
-  Login,
-  Register,
+  LoginController,
+  RegisterController,
 } from "../controllers/user.controller";
 import {
   CoinList,
@@ -14,8 +14,8 @@ import {
 } from "../controllers/coin.controller";
 
 router.get("/users", GetAllUsers);
-router.post("/login", Login);
-router.post("/register", Register);
+router.post("/login", LoginController);
+router.post("/register", RegisterController);
 router.get("/portfolio/:username", GetPortfolio);
 
 router.get("/coin-list", CoinMarketCapAPI);

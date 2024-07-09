@@ -13,7 +13,7 @@ import {
 } from "../helpers/Response";
 import { ErrorType } from "../types/ErrorTypes";
 
-export const Login = async (req: Request, res: Response): Promise<void> => {
+export const LoginController = async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
     try {
         const user = await loginModel(username, password);
@@ -28,7 +28,7 @@ export const Login = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-export const Register = async (req: Request, res: Response): Promise<void> => {
+export const RegisterController = async (req: Request, res: Response): Promise<void> => {
     const { username, password, confirmPassword } = req.body;
 
     try {
