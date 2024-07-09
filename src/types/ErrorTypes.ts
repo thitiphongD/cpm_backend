@@ -5,3 +5,8 @@ export enum ErrorType {
     REGISTER_FAIL = 'Failed to register user',
     USER_EXISTS = 'User already exists'
 }
+
+export enum SuccessType {
+    REGISTER = 'User register success',
+    LOGIN = 'Login success',
+}

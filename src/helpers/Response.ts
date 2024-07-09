@@ -1,5 +1,5 @@
 import { type Response } from "express";
-import { ErrorType } from "../types/ErrorTypes";
+import { ErrorType, SuccessType } from "../types/ErrorTypes";
 
 export const sendServerError = (res: Response) => {
   res.status(500).json({ error: ErrorType.SERVER_ERROR });
@@ -7,7 +7,7 @@ export const sendServerError = (res: Response) => {
 
 export const sendLoginSuccess = (res: Response, username: string) => {
   res.status(200).json({
-    message: "Login success",
+    message: SuccessType.LOGIN,
     username: username,
   });
 };
@@ -22,7 +22,7 @@ export const passwordDoNotMatch = (res: Response) => {
 
 
 export const sendRegisterSuccess = (res: Response, username: string) => {
-  res.status(201).json({ message: "User register success", username: username });
+  res.status(201).json({ message: SuccessType.REGISTER, username: username });
 };
 
 export const sendRegisterFail = (res: Response) => {
