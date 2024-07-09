@@ -1,31 +1,53 @@
 import { type Request, type Response } from "express";
 import pool from "../db/connection";
 import { PortfolioData } from "../interface/interface";
+import { loginModel } from "../models/user";
+import {
+  sendLoginFail,
+  sendLoginSuccess,
+  sendServerError,
+} from "../helpers/Response";
+import { logError } from "../helpers/Error";
+
+// export const Login = async (req: Request, res: Response): Promise<void> => {
+//   const { username, password } = req.body;
+//   try {
+//     const query = {
+//       text: "SELECT * FROM users WHERE username = $1 AND password = $2",
+//       values: [username, password],
+//     };
+
+//     const result = await pool.query(query);
+//     if (result.rows.length === 1) {
+//       const user = result.rows[0];
+//       if (user.password === password) {
+//         res.status(200).json({
+//           message: "Login success",
+//           username: result.rows[0].username,
+//         });
+//       } else {
+//         res.status(401).json({ error: "user or password incorrect" });
+//       }
+//     } else {
+//       res.status(401).json({ error: "user or password incorrect" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to login" });
+//   }
+// };
 
 export const Login = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
   try {
-    const query = {
-      text: "SELECT * FROM users WHERE username = $1 AND password = $2",
-      values: [username, password],
-    };
-
-    const result = await pool.query(query);
-    if (result.rows.length === 1) {
-      const user = result.rows[0];
-      if (user.password === password) {
-        res.status(200).json({
-          message: "Login success",
-          username: result.rows[0].username,
-        });
-      } else {
-        res.status(401).json({ error: "user or password incorrect" });
-      }
+    const user = await loginModel(username, password);
+    if (user) {
+      sendLoginSuccess(res, user.username);
     } else {
-      res.status(401).json({ error: "user or password incorrect" });
+      sendLoginFail(res);
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to login" });
+    logError(error, "login");
+    sendServerError(res);
   }
 };
 

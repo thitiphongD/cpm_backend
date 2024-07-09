@@ -1,3 +1,8 @@
+export interface UserLogin {
+  username: string;
+  password: string;
+}
+
 export interface PortfolioData {
   id: number;
   name: string;
