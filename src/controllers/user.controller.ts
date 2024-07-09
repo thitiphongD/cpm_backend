@@ -11,7 +11,6 @@ import {
     sendServerError,
     userAlreadyExists,
 } from "../helpers/Response";
-import { logError } from "../helpers/Error";
 import { ErrorType } from "../types/ErrorTypes";
 
 export const Login = async (req: Request, res: Response): Promise<void> => {
@@ -24,7 +23,7 @@ export const Login = async (req: Request, res: Response): Promise<void> => {
             sendLoginFail(res);
         }
     } catch (error) {
-        logError(error, "login");
+        console.error(error);
         sendServerError(res);
     }
 };
@@ -42,12 +41,11 @@ export const Register = async (req: Request, res: Response): Promise<void> => {
         } else {
             sendRegisterFail(res)
         }
-
     } catch (error) {
         if (error instanceof Error && error.message === ErrorType.USER_EXISTS) {
             userAlreadyExists(res);
         } else {
-            logError(error, "register");
+            console.error(error);
             sendServerError(res);
         }
     }
