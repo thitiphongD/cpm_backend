@@ -1,17 +1,25 @@
 import express from "express";
 const router = express.Router();
-import { getAllUsers, getPortfolio, login, register } from '../controllers/user.controller'
-import { coinList, coinMarketCapAPI, getCoin, getCoinsByUser } from '../controllers/coin.controller'
+import {
+  GetAllUsers,
+  GetPortfolio,
+  Login,
+  Register,
+} from "../controllers/user.controller";
+import {
+  CoinList,
+  CoinMarketCapAPI,
+  GetCoin,
+  GetCoinsByUser,
+} from "../controllers/coin.controller";
 
-router.get("/users", getAllUsers);
-router.post("/login", login);
-router.post("/register", register);
-router.get("/portfolio/:username", getPortfolio)
-router.get("/coin-list", coinMarketCapAPI)
-router.get("/coin/:id", getCoin)
-router.get("/coins/:ids", getCoinsByUser);
-router.get("/coins", coinList);
-
-
+router.get("/users", GetAllUsers);
+router.post("/login", Login);
+router.post("/register", Register);
+router.get("/portfolio/:username", GetPortfolio);
+router.get("/coin-list", CoinMarketCapAPI);
+router.get("/coin/:id", GetCoin);
+router.get("/coins/:ids", GetCoinsByUser);
+router.get("/coins", CoinList);
 
 export default router;
