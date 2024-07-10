@@ -1,5 +1,6 @@
 import { type Response } from "express";
 import { ErrorType, SuccessType } from "../types/ErrorTypes";
+import { PortfolioData } from "../interface/interface";
 
 export const sendServerError = (res: Response) => {
   res.status(500).json({ error: ErrorType.SERVER_ERROR });
@@ -50,8 +51,8 @@ export const sendCoinNotfound = (res: Response) => {
   return res.status(500).json({ error: ErrorType.COIN_NOT_FOUND });
 };
 
-export const sendAddCoinSuccess = (res: Response) => {
-  res.status(201).json({ message: SuccessType.COIN_SUCCESS });
+export const sendAddCoinSuccess = (res: Response, data: any) => {
+  res.status(201).json({ message: SuccessType.COIN_SUCCESS, data: data });
 };
 
 export const sendAddCoinrFail = (res: Response) => {
