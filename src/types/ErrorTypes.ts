@@ -14,4 +14,5 @@ export enum SuccessType {
   REGISTER = "User register success",
   LOGIN = "Login success",
   COIN_SUCCESS = "Add coin success",
+  PORT_SUCCESS = "Get Portfolio success"
 }

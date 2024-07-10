@@ -9,6 +9,7 @@ import {
 import {
     passwordDoNotMatch,
     sendAddCoinSuccess,
+    sendGetPortfolioSuccess,
     sendLoginFail,
     sendLoginSuccess,
     sendRegisterFail,
@@ -74,11 +75,7 @@ export const AddCoinUser = async (req: Request, res: Response) => {
             return userNotFound(res);
         }
         await addCoinUser(id, quantity, user.id);
-
-        const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
-        const mergeData = mergePortfolioData(portfolio, resultCoins);
-
-        sendAddCoinSuccess(res, mergeData);
+        await sendAddCoinSuccess(res);
     } catch (error) {
         console.error("Error in AddCoinUser:", error);
         sendServerError(res);
@@ -92,13 +89,9 @@ export const GetPortfolio = async (req: Request, res: Response): Promise<void> =
         if (!user) {
             return userNotFound(res);
         }
-
         const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
         const mergeData = mergePortfolioData(portfolio, resultCoins);
-
-        res.status(200).json({
-            data: mergeData,
-        });
+        await sendGetPortfolioSuccess(res, mergeData);
     } catch (error) {
         sendServerError(res);
     }

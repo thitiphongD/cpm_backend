@@ -50,10 +50,14 @@ export const sendCoinNotfound = (res: Response) => {
   return res.status(500).json({ error: ErrorType.COIN_NOT_FOUND });
 };
 
-export const sendAddCoinSuccess = (res: Response, data: any) => {
-  res.status(201).json({ message: SuccessType.COIN_SUCCESS, data: data });
+export const sendGetPortfolioSuccess = (res: Response, data: any) => {
+  res.status(200).json({ message: SuccessType.PORT_SUCCESS, data: data });
 };
 
-export const sendAddCoinrFail = (res: Response) => {
+export const sendAddCoinFail = (res: Response) => {
   res.status(400).json({ error: ErrorType.ADD_COIN_FAIL });
+};
+
+export const sendAddCoinSuccess = (res: Response) => {
+  res.status(201).json({ message: SuccessType.COIN_SUCCESS });
 };
