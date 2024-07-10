@@ -1,5 +1,11 @@
 import { type Request, type Response } from "express";
 import dotenv from "dotenv";
+import {
+  sendApiKeyNotfound,
+  sendCoinNotfound,
+  sendServerError,
+  sendSuccess,
+} from "../helpers/Response";
 dotenv.config();
 const apiKey = process.env.CMC_API_KEY;
 
@@ -8,14 +14,12 @@ export const CoinMarketCapAPI = async (req: Request, res: Response) => {
     "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
   if (!apiKey) {
-    console.error("API key not found in env");
-    return res.status(500).json({ error: "API key not found" });
+    sendApiKeyNotfound(res);
   }
-
   try {
     const response = await fetch(apiUrl, {
       headers: {
-        "X-CMC_PRO_API_KEY": apiKey,
+        "X-CMC_PRO_API_KEY": apiKey as string,
         Accept: "application/json",
       },
     });
@@ -23,15 +27,11 @@ export const CoinMarketCapAPI = async (req: Request, res: Response) => {
     if (!response.ok) {
       throw new Error("Failed to fetch data from CoinMarketCap API");
     }
-
     const result = await response.json();
-
     res.json(result);
   } catch (error) {
     console.error("Error fetch data from CoinMarketCap API:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch data from CoinMarketCap API" });
+    sendServerError(res);
   }
 };
 
@@ -40,14 +40,13 @@ export const CoinList = async (req: Request, res: Response) => {
     "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
   if (!apiKey) {
-    console.error("API key not found in env");
-    return res.status(500).json({ error: "API key not found" });
+    sendApiKeyNotfound(res);
   }
 
   try {
     const response = await fetch(apiUrl, {
       headers: {
-        "X-CMC_PRO_API_KEY": apiKey,
+        "X-CMC_PRO_API_KEY": apiKey as string,
         Accept: "application/json",
       },
     });
@@ -63,31 +62,28 @@ export const CoinList = async (req: Request, res: Response) => {
         symbol: row.symbol,
       };
     });
-    res.status(200).json({
-      data: coinData,
-    });
+    sendSuccess(res, coinData);
   } catch (error) {
     console.error("Error fetch data from CoinMarketCap API:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch data from CoinMarketCap API" });
+    sendServerError(res);
   }
 };
 
 export const GetCoin = async (req: Request, res: Response) => {
   const { id } = req.params;
   const apiUrl = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info";
-  if (!id) {
-    return res.status(500).json({ error: "coin not found" });
-  }
   if (!apiKey) {
-    console.error("API key not found in env");
-    return res.status(500).json({ error: "API key not found" });
+    sendApiKeyNotfound(res);
   }
+
+  if (!id) {
+    sendCoinNotfound(res);
+  }
+
   const url = `${apiUrl}?id=${id}`;
   const response = await fetch(url, {
     headers: {
-      "X-CMC_PRO_API_KEY": apiKey,
+      "X-CMC_PRO_API_KEY": apiKey as string,
       Accept: "application/json",
     },
   });
@@ -104,8 +100,7 @@ export const GetCoinsByUser = async (req: Request, res: Response) => {
     "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
 
   if (!apiKey) {
-    console.error("API key not found in env");
-    return res.status(500).json({ error: "API key not found" });
+    sendApiKeyNotfound(res);
   }
 
   const url = `${apiUrl}?id=${ids}`;
@@ -113,10 +108,11 @@ export const GetCoinsByUser = async (req: Request, res: Response) => {
   try {
     const response = await fetch(url, {
       headers: {
-        "X-CMC_PRO_API_KEY": apiKey,
+        "X-CMC_PRO_API_KEY": apiKey as string,
         Accept: "application/json",
       },
     });
+
     const data = await response.json();
     if (!response.ok) {
       const errorData = await response.json();
@@ -130,6 +126,6 @@ export const GetCoinsByUser = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Failed to fetch data from API" });
+    sendServerError(res);
   }
 };

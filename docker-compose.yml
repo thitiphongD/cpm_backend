@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -9,9 +9,8 @@ services:
       POSTGRES_PASSWORD: yellow_pass
       POSTGRES_DB: yellow
     ports:
-      - ":5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
 volumes:
   pgdata:

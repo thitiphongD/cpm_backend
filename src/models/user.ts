@@ -54,3 +54,30 @@ export const registerModel = async (
   }
 };
 
+export const fetchPortfolioData = async (username: string) => {
+  const query = {
+    text: `
+      SELECT u.username, p.crypto_id, p.quantity
+      FROM users u
+      JOIN portfolio p ON u.id = p.user_id
+      WHERE u.username = $1
+    `,
+    values: [username],
+  };
+  const result = await pool.query(query);
+  return result.rows;
+};
+
+export const checkUserExists = async (username: string): Promise<boolean> => {
+  try {
+    const query = {
+      text: "SELECT * FROM users WHERE username = $1",
+      values: [username],
+    };
+    const result = await pool.query(query);
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error("Error checking user:", error);
+    throw new Error("Error checking user");
+  }
+};
