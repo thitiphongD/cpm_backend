@@ -8,11 +8,13 @@ export enum ErrorType {
   CMC_KEY = "API key not found",
   COIN_NOT_FOUND = "Coin not found",
   ADD_COIN_FAIL = "Add coin fail",
+  UPDATE_PORT_FAIL = "Add coin fail",
 }
 
 export enum SuccessType {
   REGISTER = "User register success",
   LOGIN = "Login success",
   COIN_SUCCESS = "Add coin success",
-  PORT_SUCCESS = "Get Portfolio success"
+  PORT_SUCCESS = "Get Portfolio success",
+  UPDATE_PORT_SUCCESS = "Portfolio update success"
 }

@@ -6,6 +6,7 @@ import {
   GetPortfolio,
   LoginController,
   RegisterController,
+  UpdatePortfolio,
 } from "../controllers/user.controller";
 import {
   CoinList,
@@ -24,5 +25,8 @@ router.get("/coin/:id", GetCoin);
 router.get("/coins/:ids", GetCoinsByUser);
 router.get("/coins", CoinList);
 router.post("/portfolio", AddCoinUser);
+router.put("/portfolio/:id", UpdatePortfolio);
+
+
 
 export default router;

@@ -61,3 +61,7 @@ export const sendAddCoinFail = (res: Response) => {
 export const sendAddCoinSuccess = (res: Response) => {
   res.status(201).json({ message: SuccessType.COIN_SUCCESS });
 };
+
+export const sendUpdatePortfolioSuccess = (res: Response, data: any) => {
+  res.status(200).json({ message: SuccessType.UPDATE_PORT_SUCCESS, data: data });
+}

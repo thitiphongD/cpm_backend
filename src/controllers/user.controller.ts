@@ -5,6 +5,7 @@ import {
     getUserAndID,
     loginModel,
     registerModel,
+    updateQuantity,
 } from "../models/user";
 import {
     passwordDoNotMatch,
@@ -15,6 +16,7 @@ import {
     sendRegisterFail,
     sendRegisterSuccess,
     sendServerError,
+    sendUpdatePortfolioSuccess,
     userAlreadyExists,
     userNotFound,
 } from "../helpers/Response";
@@ -68,7 +70,7 @@ export const RegisterController = async (
 
 export const AddCoinUser = async (req: Request, res: Response) => {
     const { id, quantity, username } = req.body;
-    
+
     try {
         const user = await getUserAndID(username);
         if (!user) {
@@ -92,6 +94,27 @@ export const GetPortfolio = async (req: Request, res: Response): Promise<void> =
         const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
         const mergeData = mergePortfolioData(portfolio, resultCoins);
         await sendGetPortfolioSuccess(res, mergeData);
+    } catch (error) {
+        sendServerError(res);
+    }
+};
+
+export const UpdatePortfolio = async (req: Request, res: Response): Promise<void> => {
+    const { quantity, username } = req.body;
+    const { id } = req.params;
+
+    try {
+        const user = await getUserAndID(username);
+        if (!user) {
+            return userNotFound(res);
+        }
+        const updateData = await updateQuantity(quantity, username, +id);
+        const result = {
+            username,
+            crypto_id: id,
+            updateData
+        }
+        await sendUpdatePortfolioSuccess(res, result)
     } catch (error) {
         sendServerError(res);
     }

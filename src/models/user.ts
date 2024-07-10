@@ -68,7 +68,7 @@ export const fetchPortfolioData = async (username: string) => {
   return result.rows;
 };
 
-export const checkUserExists = async (username: string): Promise<boolean> => {
+export const checkUserExists = async (username: string) => {
   try {
     const query = {
       text: "SELECT * FROM users WHERE username = $1",
@@ -110,5 +110,33 @@ export const getUserAndID = async (username: string) => {
   } catch (error) {
     console.error("Error checking user:", error);
     throw new Error("Error checking user");
+  }
+};
+
+export const updateQuantity = async (quantity: number, username: string, crypto_id: number) => {
+  try {
+    const query = {
+      text: `
+        UPDATE portfolio
+        SET quantity = GREATEST(0, quantity + $1)
+        WHERE user_id = (SELECT id FROM users WHERE username = $2)
+        AND crypto_id = $3
+        RETURNING quantity
+      `,
+      values: [quantity, username, crypto_id],
+    };
+
+    const result = await pool.query(query);
+
+    if (result.rows.length === 0) {
+      throw new Error("No matching portfolio entry found");
+    }
+
+    const updatedQuantity = result.rows[0].quantity;
+    return updatedQuantity;
+
+  } catch (error) {
+    console.error("Error updating quantity:", error);
+    throw new Error("Failed to update quantity");
   }
 };
