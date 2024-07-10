@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import {
+  AddCoinUser,
   GetAllUsers,
   GetPortfolio,
   LoginController,
@@ -22,5 +23,6 @@ router.get("/coin-list", CoinMarketCapAPI);
 router.get("/coin/:id", GetCoin);
 router.get("/coins/:ids", GetCoinsByUser);
 router.get("/coins", CoinList);
+router.post("/portfolio", AddCoinUser);
 
 export default router;

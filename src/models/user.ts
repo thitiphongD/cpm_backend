@@ -81,3 +81,34 @@ export const checkUserExists = async (username: string): Promise<boolean> => {
     throw new Error("Error checking user");
   }
 };
+
+export const checkUserByID = async (username: string) => {
+  try {
+    const query = {
+      text: "SELECT id, username FROM users WHERE username = $1",
+      values: [username],
+    };
+    const result = await pool.query(query);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error checking user:", error);
+    throw new Error("Error checking user");
+  }
+};
+
+export const getUserAndID = async (username: string) => {
+  try {
+    const query = {
+      text: "SELECT * FROM users WHERE username = $1",
+      values: [username],
+    };
+    const result = await pool.query(query);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error checking user:", error);
+    throw new Error("Error checking user");
+  }
+};

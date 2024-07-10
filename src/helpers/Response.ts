@@ -49,3 +49,11 @@ export const sendApiKeyNotfound = (res: Response) => {
 export const sendCoinNotfound = (res: Response) => {
   return res.status(500).json({ error: ErrorType.COIN_NOT_FOUND });
 };
+
+export const sendAddCoinSuccess = (res: Response) => {
+  res.status(201).json({ message: SuccessType.COIN_SUCCESS });
+};
+
+export const sendAddCoinrFail = (res: Response) => {
+  res.status(400).json({ error: ErrorType.ADD_COIN_FAIL });
+};

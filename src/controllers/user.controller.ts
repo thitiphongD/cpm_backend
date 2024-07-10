@@ -4,11 +4,14 @@ import { PortfolioData } from "../interface/interface";
 import {
   checkUserExists,
   fetchPortfolioData,
+  getUserAndID,
   loginModel,
   registerModel,
 } from "../models/user";
 import {
   passwordDoNotMatch,
+  sendAddCoinSuccess,
+  sendAddCoinrFail,
   sendLoginFail,
   sendLoginSuccess,
   sendRegisterFail,
@@ -18,7 +21,7 @@ import {
   userNotFound,
 } from "../helpers/Response";
 import { ErrorType } from "../types/ErrorTypes";
-import { fetchCoinData } from "../models/coin";
+import { addCoinUser, fetchCoinData } from "../models/coin";
 
 export const LoginController = async (
   req: Request,
@@ -61,6 +64,45 @@ export const RegisterController = async (
       console.error(error);
       sendServerError(res);
     }
+  }
+};
+
+// export const AddCoinUser = async (req: Request, res: Response) => {
+//   const { crypto_id, quantity, username } = req.body;
+
+//   console.log();
+
+//   try {
+//     const user = await getUserAndID(username);
+
+//     if (!user) {
+//       userNotFound(res);
+//     }
+//     const result = await addCoinUser(crypto_id, quantity, user.id);
+//     if (result) {
+//       sendAddCoinSuccess(res);
+//     } else {
+//       sendAddCoinrFail(res);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     sendServerError(res);
+//   }
+// };
+
+export const AddCoinUser = async (req: Request, res: Response) => {
+  const { crypto_id, quantity, username } = req.body;
+
+  try {
+    const user = await getUserAndID(username);
+    if (!user) {
+      return userNotFound(res);
+    }
+    await addCoinUser(crypto_id, quantity, user.id);
+    sendAddCoinSuccess(res);
+  } catch (error) {
+    console.error("Error in AddCoinUser:", error);
+    sendServerError(res);
   }
 };
 
