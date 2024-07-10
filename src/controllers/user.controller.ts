@@ -90,37 +90,6 @@ export const RegisterController = async (
 //   }
 // };
 
-const mergePortfolioData = async (
-  username: string
-): Promise<PortfolioData[]> => {
-  const portfolioRows = await fetchPortfolioData(username);
-  const cryptoIds = portfolioRows.map((row) => row.crypto_id).join(",");
-  const resultCoins = await fetchCoinData(cryptoIds);
-
-  const mergeData: PortfolioData[] = portfolioRows.map((row) => {
-    const coinData = resultCoins.data[row.crypto_id];
-    const price = coinData.quote["USD"].price;
-    const amount = parseFloat(row.quantity) * price;
-
-    return {
-      id: row.crypto_id,
-      name: coinData.name,
-      symbol: coinData.symbol,
-      cmc_rank: coinData.cmc_rank,
-      price: price,
-      percent_change_1h: coinData.quote["USD"].percent_change_1h,
-      percent_change_24h: coinData.quote["USD"].percent_change_24h,
-      percent_change_7d: coinData.quote["USD"].percent_change_7d,
-      volume_24h: coinData.quote["USD"].volume_24h,
-      market_cap: coinData.quote["USD"].market_cap,
-      quantity: parseFloat(row.quantity),
-      amount: amount,
-    };
-  });
-
-  return mergeData;
-};
-
 export const AddCoinUser = async (req: Request, res: Response) => {
   const { id, quantity, username } = req.body;
 
@@ -130,7 +99,31 @@ export const AddCoinUser = async (req: Request, res: Response) => {
       return userNotFound(res);
     }
     await addCoinUser(id, quantity, user.id);
-    const mergeData = await mergePortfolioData(username);
+    const portfolioRows = await fetchPortfolioData(username);
+    const cryptoIds = portfolioRows.map((row) => row.crypto_id).join(",");
+    const resultCoins = await fetchCoinData(cryptoIds);
+
+    const mergeData: PortfolioData[] = portfolioRows.map((row) => {
+      const coinData = resultCoins.data[row.crypto_id];
+      const price = resultCoins.data[row.crypto_id].quote["USD"].price;
+      const amount =
+        parseFloat(row.quantity) *
+        resultCoins.data[row.crypto_id].quote["USD"].price;
+      return {
+        id: row.crypto_id,
+        name: coinData.name,
+        symbol: coinData.symbol,
+        cmc_rank: coinData.cmc_rank,
+        price: price,
+        percent_change_1h: coinData.quote["USD"].percent_change_1h,
+        percent_change_24h: coinData.quote["USD"].percent_change_24h,
+        percent_change_7d: coinData.quote["USD"].percent_change_7d,
+        volume_24h: coinData.quote["USD"].volume_24h,
+        market_cap: coinData.quote["USD"].market_cap,
+        quantity: parseFloat(row.quantity),
+        amount: amount,
+      };
+    });
     sendAddCoinSuccess(res, mergeData);
   } catch (error) {
     console.error("Error in AddCoinUser:", error);
@@ -150,7 +143,31 @@ export const GetPortfolio = async (
       userNotFound(res);
     }
 
-    const mergeData = await mergePortfolioData(username);
+    const portfolioRows = await fetchPortfolioData(username);
+    const cryptoIds = portfolioRows.map((row) => row.crypto_id).join(",");
+    const resultCoins = await fetchCoinData(cryptoIds);
+
+    const mergeData: PortfolioData[] = portfolioRows.map((row) => {
+      const coinData = resultCoins.data[row.crypto_id];
+      const price = resultCoins.data[row.crypto_id].quote["USD"].price;
+      const amount =
+        parseFloat(row.quantity) *
+        resultCoins.data[row.crypto_id].quote["USD"].price;
+      return {
+        id: row.crypto_id,
+        name: coinData.name,
+        symbol: coinData.symbol,
+        cmc_rank: coinData.cmc_rank,
+        price: price,
+        percent_change_1h: coinData.quote["USD"].percent_change_1h,
+        percent_change_24h: coinData.quote["USD"].percent_change_24h,
+        percent_change_7d: coinData.quote["USD"].percent_change_7d,
+        volume_24h: coinData.quote["USD"].volume_24h,
+        market_cap: coinData.quote["USD"].market_cap,
+        quantity: parseFloat(row.quantity),
+        amount: amount,
+      };
+    });
     res.status(200).json({
       data: mergeData,
     });
