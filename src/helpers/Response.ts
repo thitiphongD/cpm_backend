@@ -5,6 +5,13 @@ export const sendServerError = (res: Response) => {
   res.status(500).json({ error: ErrorType.SERVER_ERROR });
 };
 
+export const notFound = (res: Response) => {
+  res.status(404).json({
+    error: "Not Found",
+    message: "Hacker?",
+  });
+};
+
 export const sendSuccess = (res: Response, data: any) => {
   res.json({
     data,

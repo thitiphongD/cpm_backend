@@ -18,14 +18,16 @@ import {
 router.get("/users", GetAllUsers);
 router.post("/login", LoginController);
 router.post("/register", RegisterController);
+
 router.get("/portfolio/:username", GetPortfolio);
+router.post("/portfolio", AddCoinUser);
+router.put("/portfolio/:id", UpdatePortfolio);
 
 router.get("/coin-list", CoinMarketCapAPI);
 router.get("/coin/:id", GetCoin);
 router.get("/coins/:ids", GetCoinsByUser);
 router.get("/coins", CoinList);
-router.post("/portfolio", AddCoinUser);
-router.put("/portfolio/:id", UpdatePortfolio);
+
 
 
 

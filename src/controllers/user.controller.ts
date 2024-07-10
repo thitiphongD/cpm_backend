@@ -27,7 +27,7 @@ import { getPortfolioAndCoinData, mergePortfolioData } from "../helpers/portfoli
 export const LoginController = async (
     req: Request,
     res: Response
-): Promise<void> => {
+) => {
     const { username, password } = req.body;
     try {
         const user = await loginModel(username, password);
@@ -45,7 +45,7 @@ export const LoginController = async (
 export const RegisterController = async (
     req: Request,
     res: Response
-): Promise<void> => {
+) => {
     const { username, password, confirmPassword } = req.body;
 
     try {
@@ -84,7 +84,7 @@ export const AddCoinUser = async (req: Request, res: Response) => {
     }
 };
 
-export const GetPortfolio = async (req: Request, res: Response): Promise<void> => {
+export const GetPortfolio = async (req: Request, res: Response) => {
     const username = req.params.username;
     try {
         const user = await checkUserExists(username);
@@ -99,7 +99,7 @@ export const GetPortfolio = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-export const UpdatePortfolio = async (req: Request, res: Response): Promise<void> => {
+export const UpdatePortfolio = async (req: Request, res: Response) => {
     const { quantity, username } = req.body;
     const { id } = req.params;
 
@@ -123,7 +123,7 @@ export const UpdatePortfolio = async (req: Request, res: Response): Promise<void
 export const GetAllUsers = async (
     req: Request,
     res: Response
-): Promise<void> => {
+) => {
     try {
         const result = await pool.query("SELECT * FROM users");
         res.status(200).json({
