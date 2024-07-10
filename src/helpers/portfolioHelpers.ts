@@ -2,8 +2,8 @@ import { PortfolioData } from "../interface/interface";
 import { fetchCoinData } from "../models/coin";
 import { fetchPortfolioData } from "../models/user";
 
-export const mergePortfolioData = (portfolioRows: any, resultCoins: any): PortfolioData[] => {
-    return portfolioRows.map((row: any) => {
+export const mergePortfolioData = (portfolio: any, resultCoins: any): PortfolioData[] => {
+    return portfolio.map((row: any) => {
         const coinData = resultCoins.data[row.crypto_id];
         const price = resultCoins.data[row.crypto_id].quote["USD"].price;
         const amount = parseFloat(row.quantity) * price;
@@ -26,8 +26,8 @@ export const mergePortfolioData = (portfolioRows: any, resultCoins: any): Portfo
 }
 
 export const getPortfolioAndCoinData = async (username: string) => {
-    const portfolioRows = await fetchPortfolioData(username);
-    const cryptoIds = portfolioRows.map((row) => row.crypto_id).join(",");
+    const portfolio = await fetchPortfolioData(username);
+    const cryptoIds = portfolio.map((row) => row.crypto_id).join(",");
     const resultCoins = await fetchCoinData(cryptoIds);
-    return { portfolioRows, resultCoins };
+    return { portfolio, resultCoins };
 }

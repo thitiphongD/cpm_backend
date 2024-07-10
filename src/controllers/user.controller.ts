@@ -1,9 +1,7 @@
 import { type Request, type Response } from "express";
 import { pool } from "../db/connection";
-import { PortfolioData } from "../interface/interface";
 import {
     checkUserExists,
-    fetchPortfolioData,
     getUserAndID,
     loginModel,
     registerModel,
@@ -11,7 +9,6 @@ import {
 import {
     passwordDoNotMatch,
     sendAddCoinSuccess,
-    sendAddCoinrFail,
     sendLoginFail,
     sendLoginSuccess,
     sendRegisterFail,
@@ -21,7 +18,7 @@ import {
     userNotFound,
 } from "../helpers/Response";
 import { ErrorType } from "../types/ErrorTypes";
-import { addCoinUser, fetchCoinData } from "../models/coin";
+import { addCoinUser } from "../models/coin";
 import { getPortfolioAndCoinData, mergePortfolioData } from "../helpers/portfolioHelpers";
 
 export const LoginController = async (
@@ -78,8 +75,8 @@ export const AddCoinUser = async (req: Request, res: Response) => {
         }
         await addCoinUser(id, quantity, user.id);
 
-        const { portfolioRows, resultCoins } = await getPortfolioAndCoinData(username);
-        const mergeData = mergePortfolioData(portfolioRows, resultCoins);
+        const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
+        const mergeData = mergePortfolioData(portfolio, resultCoins);
 
         sendAddCoinSuccess(res, mergeData);
     } catch (error) {
@@ -96,8 +93,8 @@ export const GetPortfolio = async (req: Request, res: Response): Promise<void> =
             return userNotFound(res);
         }
 
-        const { portfolioRows, resultCoins } = await getPortfolioAndCoinData(username);
-        const mergeData = mergePortfolioData(portfolioRows, resultCoins);
+        const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
+        const mergeData = mergePortfolioData(portfolio, resultCoins);
 
         res.status(200).json({
             data: mergeData,
