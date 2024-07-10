@@ -9,7 +9,7 @@ export const fetchCoinData = async (cryptoIds: string) => {
 };
 
 export const addCoinUser = async (
-  crypto_id: number,
+  id: number,
   quantity: number,
   user_id: number
 ) => {
@@ -28,7 +28,7 @@ export const addCoinUser = async (
       WHERE NOT EXISTS (SELECT * FROM upsert);
     `;
 
-    const result = await client.query(query, [user_id, quantity, crypto_id]);
+    const result = await client.query(query, [user_id, quantity, id]);
     await client.query("COMMIT");
     return result.rowCount;
   } catch (error) {

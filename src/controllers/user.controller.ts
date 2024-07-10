@@ -91,14 +91,14 @@ export const RegisterController = async (
 // };
 
 export const AddCoinUser = async (req: Request, res: Response) => {
-  const { crypto_id, quantity, username } = req.body;
+  const { id, quantity, username } = req.body;
 
   try {
     const user = await getUserAndID(username);
     if (!user) {
       return userNotFound(res);
     }
-    await addCoinUser(crypto_id, quantity, user.id);
+    await addCoinUser(id, quantity, user.id);
     sendAddCoinSuccess(res);
   } catch (error) {
     console.error("Error in AddCoinUser:", error);
