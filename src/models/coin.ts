@@ -1,4 +1,3 @@
-import { type Request, type Response } from "express";
 import { pool } from "../db/connection";
 
 export const fetchCoinData = async (cryptoIds: string) => {
