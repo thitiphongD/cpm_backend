@@ -9,6 +9,12 @@ export interface UserRegister {
   confirmPassword: string;
 }
 
+export interface PortfolioDTO {
+  username: string;
+  crypto_id: number;
+  quantity: number;
+}
+
 export interface PortfolioData {
   id: number;
   name: string;
@@ -23,5 +29,3 @@ export interface PortfolioData {
   quantity: number;
   amount: number;
 }
-
-

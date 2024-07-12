@@ -3,7 +3,7 @@ import { UserLogin, UserRegister } from "../interface/interface";
 
 export const loginModel = async (
   username: string,
-  password: string
+  password: string,
 ): Promise<UserLogin | null> => {
   try {
     const query = {
@@ -24,7 +24,7 @@ export const loginModel = async (
 
 export const registerModel = async (
   username: string,
-  password: string
+  password: string,
 ): Promise<UserRegister | null> => {
   try {
     const checkQuery = {
@@ -57,7 +57,7 @@ export const registerModel = async (
 export const fetchPortfolioData = async (username: string) => {
   const query = {
     text: `
-      SELECT u.username, p.crypto_id, p.quantity
+      SELECT u.username, p.crypto_id, p.quantity::numeric(10, 2)
       FROM users u
       JOIN portfolio p ON u.id = p.user_id
       WHERE u.username = $1
@@ -113,7 +113,11 @@ export const getUserAndID = async (username: string) => {
   }
 };
 
-export const updateQuantity = async (quantity: number, username: string, crypto_id: number) => {
+export const updateQuantity = async (
+  quantity: number,
+  username: string,
+  crypto_id: number,
+) => {
   try {
     const query = {
       text: `
@@ -134,7 +138,6 @@ export const updateQuantity = async (quantity: number, username: string, crypto_
 
     const updatedQuantity = result.rows[0].quantity;
     return updatedQuantity;
-
   } catch (error) {
     console.error("Error updating quantity:", error);
     throw new Error("Failed to update quantity");
