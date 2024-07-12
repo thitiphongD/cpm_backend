@@ -3,13 +3,12 @@ import { fetchCoinData } from "../models/coin";
 import { fetchPortfolioData } from "../models/user";
 
 export const mergePortfolioData = (
-  // portfolio: PortfolioDTO,
-  portfolio: PortfolioDTO,
+  portfolio: PortfolioDTO[],
   resultCoins: any,
 ): PortfolioData[] => {
-  return portfolio.map((row: any) => {
+  return portfolio.map((row: PortfolioDTO) => {
     const coinData = resultCoins.data[row.crypto_id];
-    const price = resultCoins.data[row.crypto_id].quote["USD"].price;
+    const price = coinData.quote["USD"].price;
     const amount = row.quantity * price;
     return {
       id: row.crypto_id,

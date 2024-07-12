@@ -13,6 +13,7 @@ import {
   CoinMarketCapAPI,
   GetCoin,
   GetCoinsByUser,
+  CoinData,
 } from "../controllers/coin.controller";
 
 router.get("/users", GetAllUsers);
@@ -25,10 +26,10 @@ router.put("/portfolio/:id", UpdatePortfolio);
 
 router.get("/coin-list", CoinMarketCapAPI);
 router.get("/coin/:id", GetCoin);
+
 router.get("/coins/:ids", GetCoinsByUser);
 router.get("/coins", CoinList);
 
-
-
+router.get("/coinsList/v2", CoinData);
 
 export default router;

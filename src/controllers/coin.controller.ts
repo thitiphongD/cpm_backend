@@ -6,6 +6,7 @@ import {
   sendServerError,
   sendSuccess,
 } from "../helpers/Response";
+import { CoinDTO } from "../interface/interface";
 dotenv.config();
 const apiKey = process.env.CMC_API_KEY;
 
@@ -101,13 +102,10 @@ export const GetCoin = async (req: Request, res: Response) => {
 export const GetCoinsByUser = async (req: Request, res: Response) => {
   const { ids } = req.params;
   const apiUrl = API_URL.COIN_USER;
-
   if (!apiKey) {
     sendApiKeyNotfound(res);
   }
-
   const url = `${apiUrl}?id=${ids}`;
-
   try {
     const response = await fetch(url, {
       headers: {
@@ -129,6 +127,60 @@ export const GetCoinsByUser = async (req: Request, res: Response) => {
     res.json(data);
   } catch (error) {
     console.error("Error fetching data:", error);
+    sendServerError(res);
+  }
+};
+
+export const CoinData = async (req: Request, res: Response) => {
+  const coinListURL = API_URL.ALL_COIN_LIST;
+  if (!apiKey) {
+    sendApiKeyNotfound(res);
+  }
+  try {
+    const response = await fetch(coinListURL, {
+      headers: {
+        "X-CMC_PRO_API_KEY": apiKey as string,
+        Accept: "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from CoinMarketCap API");
+    }
+    const result = await response.json();
+    const ids = result.data.map((coin: any) => coin.id);
+    const idsString = ids.join(",");
+    const coinByParams = API_URL.COIN_INFO;
+    const url = `${coinByParams}?id=${idsString}`;
+
+    const dataRes = await fetch(url, {
+      headers: {
+        "X-CMC_PRO_API_KEY": apiKey as string,
+        Accept: "application/json",
+      },
+    });
+    if (!dataRes.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+    const coinInfo = await dataRes.json();
+
+    result.data.forEach((coin: any) => {
+      coin.logo = coinInfo.data[coin.id]?.logo;
+      coin.description = coinInfo.data[coin.id]?.description;
+    });
+
+    const coinData = result.data.map((coin: CoinDTO) => ({
+      id: coin.id,
+      name: coin.name,
+      symbol: coin.symbol,
+      slug: coin.slug,
+      cmc_rank: coin.cmc_rank,
+      quote: coin.quote,
+      logo: coin.logo,
+      description: coin.description,
+    }));
+
+    res.json(coinData);
+  } catch (error) {
     sendServerError(res);
   }
 };
