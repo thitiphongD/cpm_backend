@@ -9,10 +9,15 @@ import {
 dotenv.config();
 const apiKey = process.env.CMC_API_KEY;
 
-export const CoinMarketCapAPI = async (req: Request, res: Response) => {
-  const apiUrl =
-    "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
+enum API_URL {
+  ALL_COIN_LIST = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
+  COIN_LIST = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
+  COIN_INFO = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info",
+  COIN_USER = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",
+}
 
+export const CoinMarketCapAPI = async (req: Request, res: Response) => {
+  const apiUrl = API_URL.ALL_COIN_LIST;
   if (!apiKey) {
     sendApiKeyNotfound(res);
   }
@@ -36,8 +41,7 @@ export const CoinMarketCapAPI = async (req: Request, res: Response) => {
 };
 
 export const CoinList = async (req: Request, res: Response) => {
-  const apiUrl =
-    "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
+  const apiUrl = API_URL.COIN_LIST;
 
   if (!apiKey) {
     sendApiKeyNotfound(res);
@@ -71,7 +75,7 @@ export const CoinList = async (req: Request, res: Response) => {
 
 export const GetCoin = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const apiUrl = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info";
+  const apiUrl = API_URL.COIN_INFO;
   if (!apiKey) {
     sendApiKeyNotfound(res);
   }
@@ -96,8 +100,7 @@ export const GetCoin = async (req: Request, res: Response) => {
 
 export const GetCoinsByUser = async (req: Request, res: Response) => {
   const { ids } = req.params;
-  const apiUrl =
-    "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
+  const apiUrl = API_URL.COIN_USER;
 
   if (!apiKey) {
     sendApiKeyNotfound(res);
@@ -120,7 +123,7 @@ export const GetCoinsByUser = async (req: Request, res: Response) => {
       throw new Error(
         `Failed to fetch data: ${
           errorData.status?.error_message || "Unknown error"
-        }`
+        }`,
       );
     }
     res.json(data);

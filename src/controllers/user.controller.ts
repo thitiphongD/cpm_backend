@@ -78,7 +78,7 @@ export const AddCoinUser = async (req: Request, res: Response) => {
       return userNotFound(res);
     }
     await addCoinUser(id, quantity, user.id);
-    await sendAddCoinSuccess(res);
+    sendAddCoinSuccess(res);
   } catch (error) {
     console.error("Error in AddCoinUser:", error);
     sendServerError(res);
@@ -94,7 +94,7 @@ export const GetPortfolio = async (req: Request, res: Response) => {
     }
     const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
     const mergeData = mergePortfolioData(portfolio, resultCoins);
-    await sendGetPortfolioSuccess(res, mergeData);
+    sendGetPortfolioSuccess(res, mergeData);
   } catch (error) {
     sendServerError(res);
   }
@@ -115,7 +115,7 @@ export const UpdatePortfolio = async (req: Request, res: Response) => {
       crypto_id: id,
       updateData,
     };
-    await sendUpdatePortfolioSuccess(res, result);
+    sendUpdatePortfolioSuccess(res, result);
   } catch (error) {
     sendServerError(res);
   }
