@@ -2,6 +2,7 @@ import { type Request, type Response } from "express";
 import { pool } from "../db/connection";
 import {
   checkUserExists,
+  fetchPortfolioData,
   getUserAndID,
   loginModel,
   registerModel,
@@ -12,6 +13,7 @@ import {
   sendUpdatePortfolioSuccess,
   sendServerError,
   sendAddCoinSuccess,
+  sendCoinNotfound,
 } from "../helpers/Response";
 
 import {
@@ -26,10 +28,8 @@ import {
 
 import { ErrorType } from "../types/ErrorTypes";
 import { addCoinUser } from "../models/coin";
-import {
-  getPortfolioAndCoinData,
-  mergePortfolioData,
-} from "../helpers/portfolioHelpers";
+import { CoinDataMarketCapAPI, CoinList, fetchCoinByID } from "./coin.controller";
+import { CoinDTO } from "../interface/interface";
 
 export const LoginController = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -92,9 +92,26 @@ export const GetPortfolio = async (req: Request, res: Response) => {
     if (!user) {
       return userNotFound(res);
     }
-    const { portfolio, resultCoins } = await getPortfolioAndCoinData(username);
-    const mergeData = mergePortfolioData(portfolio, resultCoins);
-    sendGetPortfolioSuccess(res, mergeData);
+    const portfolio = await fetchPortfolioData(username);
+    const cryptoIds = portfolio.map((row: any) => row.crypto_id);      
+    const result = await CoinDataMarketCapAPI();   
+    const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
+    const coinInfo = await fetchCoinByID(cryptoIds.join(','));
+    const resultPortfolio = coinData.map((coin: any) => ({
+      id: coin.id,
+      name: coin.name,
+      symbol: coin.symbol,
+      slug: coin.slug,
+      cmc_rank: coin.cmc_rank,
+      quote: coin.quote,
+      logo: coinInfo.data[coin.id]?.logo,
+      description: coinInfo.data[coin.id]?.description,
+    }));
+
+    if (resultPortfolio.length === 0) {
+      return sendCoinNotfound(res);
+    }
+    return res.json(resultPortfolio);
   } catch (error) {
     sendServerError(res);
   }
