@@ -11,7 +11,7 @@ import {
 import {
   CoinList,
   GetCoin,
-  GetCoinsByUser,
+  GetCoinsById,
 } from "../controllers/coin.controller";
 
 router.get("/users", GetAllUsers);
@@ -24,7 +24,7 @@ router.put("/portfolio/:id", UpdatePortfolio);
 
 router.get("/coin/:id", GetCoin);
 
-router.get("/coins/:ids", GetCoinsByUser);
+router.get("/coins/:ids", GetCoinsById);
 router.get("/coins", CoinList);
 
 export default router;

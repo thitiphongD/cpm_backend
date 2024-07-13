@@ -108,7 +108,7 @@ export const GetCoin = async (req: Request, res: Response) => {
       return sendCoinNotfound(res);
     }
     const coinInfo = await fetchCoinByID(id);
-    
+
     const resultCoinData = {
       id: coinData.id,
       name: coinData.name,
@@ -126,7 +126,7 @@ export const GetCoin = async (req: Request, res: Response) => {
   }
 };
 
-export const GetCoinsByUser = async (req: Request, res: Response) => {
+export const GetCoinsById = async (req: Request, res: Response) => {
   const { ids } = req.params;
   const apiUrl = API_URL.COIN_USER;
   if (!apiKey) {
