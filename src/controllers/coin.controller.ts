@@ -22,7 +22,7 @@ export const CoinDataMarketCapAPI = async (): Promise<CoinDTO[]> => {
   if (!apiKey) {
     throw new Error("API key not found");
   }
-  
+
   try {
     const response = await fetch(coinListURL, {
       headers: {
@@ -64,7 +64,7 @@ export const CoinDataMarketCapAPI = async (): Promise<CoinDTO[]> => {
 export const fetchCoinByID = async (id: string): Promise<any> => {
   const apiUrl = API_URL.COIN_INFO;
   const url = `${apiUrl}?id=${id}`;
-  
+
   const response = await fetch(url, {
     headers: {
       'X-CMC_PRO_API_KEY': apiKey as string,
@@ -108,18 +108,19 @@ export const GetCoin = async (req: Request, res: Response) => {
       return sendCoinNotfound(res);
     }
     const coinInfo = await fetchCoinByID(id);
-    coinData.logo = coinInfo.data[coinData.id]?.logo;
-    coinData.description = coinInfo.data[coinData.id]?.description;
-    res.json({
+    
+    const resultCoinData = {
       id: coinData.id,
       name: coinData.name,
       symbol: coinData.symbol,
       slug: coinData.slug,
       cmc_rank: coinData.cmc_rank,
       quote: coinData.quote,
-      logo: coinData.logo,
-      description: coinData.description,
-    });
+      logo: coinInfo.data[coinData.id]?.logo,
+      description: coinInfo.data[coinData.id]?.description,
+    }
+
+    res.json(resultCoinData);
   } catch (error) {
     sendServerError(res);
   }

@@ -97,6 +97,7 @@ export const GetPortfolio = async (req: Request, res: Response) => {
     const result = await CoinDataMarketCapAPI();   
     const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
     const coinInfo = await fetchCoinByID(cryptoIds.join(','));
+    
     const resultPortfolio = coinData.map((coin: any) => ({
       id: coin.id,
       name: coin.name,
