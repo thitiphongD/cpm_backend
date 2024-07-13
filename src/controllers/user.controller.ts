@@ -92,13 +92,12 @@ export const GetPortfolio = async (req: Request, res: Response) => {
     if (!user) {
       return userNotFound(res);
     }
-    const portfolio = await fetchPortfolioData(username);
-
+    const portfolio = await fetchPortfolioData(username);    
     const cryptoIds = portfolio.map((row: any) => row.crypto_id);
     const result = await CoinDataMarketCapAPI();
     const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
     const coinInfo = await fetchCoinByID(cryptoIds.join(','));
-    
+
     const resultPortfolio = coinData.map((coin: any) => {
       const portfolioItem = portfolio.find((item: any) => item.crypto_id === coin.id);
       const quantity = portfolioItem ? portfolioItem.quantity : 0;
@@ -114,7 +113,7 @@ export const GetPortfolio = async (req: Request, res: Response) => {
         quote: coin.quote,
         logo: coinInfo.data[coin.id]?.logo,
         description: coinInfo.data[coin.id]?.description,
-        quantity: quantity,
+        quantity: parseFloat(quantity),
         amount: amount
       };
     });
