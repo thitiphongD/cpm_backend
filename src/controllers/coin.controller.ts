@@ -43,11 +43,9 @@ export const CoinMarketCapAPI = async (req: Request, res: Response) => {
 
 export const CoinList = async (req: Request, res: Response) => {
   const apiUrl = API_URL.COIN_LIST;
-
   if (!apiKey) {
     sendApiKeyNotfound(res);
   }
-
   try {
     const response = await fetch(apiUrl, {
       headers: {
@@ -74,29 +72,60 @@ export const CoinList = async (req: Request, res: Response) => {
   }
 };
 
+
 export const GetCoin = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const apiUrl = API_URL.COIN_INFO;
   if (!apiKey) {
-    sendApiKeyNotfound(res);
+    return sendApiKeyNotfound(res);
   }
-
   if (!id) {
-    sendCoinNotfound(res);
+    return sendCoinNotfound(res);
   }
 
-  const url = `${apiUrl}?id=${id}`;
-  const response = await fetch(url, {
-    headers: {
-      "X-CMC_PRO_API_KEY": apiKey as string,
-      Accept: "application/json",
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
+  try {
+    const coinListURL = API_URL.ALL_COIN_LIST;
+    const response = await fetch(coinListURL, {
+      headers: {
+        'X-CMC_PRO_API_KEY': apiKey as string,
+        Accept: 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch data from CoinMarketCap API');
+    }
+    const result = await response.json();
+    const coinData = result.data.find((coin: any) => coin.id.toString() === id);
+    if (!coinData) {
+      return sendCoinNotfound(res);
+    }
+    const apiUrl = API_URL.COIN_INFO;
+    const url = `${apiUrl}?id=${id}`;
+    const dataRes = await fetch(url, {
+      headers: {
+        'X-CMC_PRO_API_KEY': apiKey as string,
+        Accept: 'application/json',
+      },
+    });
+    if (!dataRes.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const coinInfo = await dataRes.json();
+    coinData.logo = coinInfo.data[coinData.id]?.logo;
+    coinData.description = coinInfo.data[coinData.id]?.description;
+
+    res.json({
+      id: coinData.id,
+      name: coinData.name,
+      symbol: coinData.symbol,
+      slug: coinData.slug,
+      cmc_rank: coinData.cmc_rank,
+      quote: coinData.quote,
+      logo: coinData.logo,
+      description: coinData.description,
+    });
+  } catch (error) {
+    sendServerError(res);
   }
-  const data = await response.json();
-  res.json(data);
 };
 
 export const GetCoinsByUser = async (req: Request, res: Response) => {
@@ -119,8 +148,7 @@ export const GetCoinsByUser = async (req: Request, res: Response) => {
       const errorData = await response.json();
       console.error("API Error:", errorData);
       throw new Error(
-        `Failed to fetch data: ${
-          errorData.status?.error_message || "Unknown error"
+        `Failed to fetch data: ${errorData.status?.error_message || "Unknown error"
         }`,
       );
     }
