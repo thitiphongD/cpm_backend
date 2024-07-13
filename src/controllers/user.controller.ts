@@ -93,22 +93,31 @@ export const GetPortfolio = async (req: Request, res: Response) => {
       return userNotFound(res);
     }
     const portfolio = await fetchPortfolioData(username);
-    const cryptoIds = portfolio.map((row: any) => row.crypto_id);      
-    const result = await CoinDataMarketCapAPI();   
+
+    const cryptoIds = portfolio.map((row: any) => row.crypto_id);
+    const result = await CoinDataMarketCapAPI();
     const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
     const coinInfo = await fetchCoinByID(cryptoIds.join(','));
     
-    const resultPortfolio = coinData.map((coin: any) => ({
-      id: coin.id,
-      name: coin.name,
-      symbol: coin.symbol,
-      slug: coin.slug,
-      cmc_rank: coin.cmc_rank,
-      quote: coin.quote,
-      logo: coinInfo.data[coin.id]?.logo,
-      description: coinInfo.data[coin.id]?.description,
-    }));
+    const resultPortfolio = coinData.map((coin: any) => {
+      const portfolioItem = portfolio.find((item: any) => item.crypto_id === coin.id);
+      const quantity = portfolioItem ? portfolioItem.quantity : 0;
+      const price = coin.quote["USD"].price;
+      const amount = quantity * price;
 
+      return {
+        id: coin.id,
+        name: coin.name,
+        symbol: coin.symbol,
+        slug: coin.slug,
+        cmc_rank: coin.cmc_rank,
+        quote: coin.quote,
+        logo: coinInfo.data[coin.id]?.logo,
+        description: coinInfo.data[coin.id]?.description,
+        quantity: quantity,
+        amount: amount
+      };
+    });
     if (resultPortfolio.length === 0) {
       return sendCoinNotfound(res);
     }
