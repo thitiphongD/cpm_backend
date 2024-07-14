@@ -86,6 +86,7 @@ export const AddCoinUser = async (req: Request, res: Response) => {
 
 export const GetPortfolio = async (req: Request, res: Response) => {
   const username = req.body.username;
+  
   try {
     const user = await checkUserExists(username);
     if (!user) {

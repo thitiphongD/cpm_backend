@@ -18,8 +18,8 @@ router.get("/users", GetAllUsers);
 router.post("/login", LoginController);
 router.post("/register", RegisterController);
 
-router.get("/portfolio", GetPortfolio);
-router.post("/portfolio", AddCoinUser);
+router.post("/portfolio", GetPortfolio);
+router.post("/portfolio/buy", AddCoinUser);
 router.put("/portfolio/:id", UpdatePortfolio);
 
 router.get("/coin/:id", GetCoin);
