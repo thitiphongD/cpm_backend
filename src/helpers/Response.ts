@@ -23,7 +23,7 @@ export const sendApiKeyNotfound = (res: Response) => {
 };
 
 export const sendCoinNotfound = (res: Response) => {
-  return res.status(500).json({ error: ErrorType.COIN_NOT_FOUND });
+  return res.status(404).json({ error: ErrorType.COIN_NOT_FOUND });
 };
 
 export const sendGetPortfolioSuccess = (res: Response, data: any) => {

@@ -87,6 +87,10 @@ export const GetPortfolio = async (req: Request, res: Response) => {
       return userNotFound(res);
     }
     const portfolio = await getPortFolioModel(username);
+
+    if (portfolio.length === 0) {
+      return sendCoinNotfound(res);
+    }
     const cryptoIds = portfolio.map((row: any) => row.crypto_id);
     const result = await CoinDataMarketCapAPI();
     const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
@@ -111,9 +115,11 @@ export const GetPortfolio = async (req: Request, res: Response) => {
         amount: amount
       };
     });
+        
     if (resultPortfolio.length === 0) {
       return sendCoinNotfound(res);
     }
+    
     return res.json(resultPortfolio);
   } catch (error) {
     sendServerError(res);
