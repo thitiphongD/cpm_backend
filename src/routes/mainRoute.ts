@@ -18,7 +18,7 @@ router.get("/users", GetAllUsers);
 router.post("/login", LoginController);
 router.post("/register", RegisterController);
 
-router.get("/portfolio/:username", GetPortfolio);
+router.get("/portfolio", GetPortfolio);
 router.post("/portfolio", AddCoinUser);
 router.put("/portfolio/:id", UpdatePortfolio);
 

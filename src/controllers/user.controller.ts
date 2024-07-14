@@ -29,7 +29,6 @@ import {
 import { ErrorType } from "../types/ErrorTypes";
 import { addCoinUser } from "../models/coin";
 import { CoinDataMarketCapAPI, CoinList, fetchCoinByID } from "./coin.controller";
-import { CoinDTO } from "../interface/interface";
 
 export const LoginController = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -86,7 +85,7 @@ export const AddCoinUser = async (req: Request, res: Response) => {
 };
 
 export const GetPortfolio = async (req: Request, res: Response) => {
-  const username = req.params.username;
+  const username = req.body.username;
   try {
     const user = await checkUserExists(username);
     if (!user) {
