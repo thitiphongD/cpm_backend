@@ -17,29 +17,29 @@ To get this project up and running on your local machine, follow these steps:
 1. **Clone the repository**
 
 ```bash
-    git clone https://github.com/thitiphongD/cpm_backend
-    cd cpm_backend
+git clone https://github.com/thitiphongD/cpm_backend
+cd cpm_backend
 ```
 
 2. Set up environment
    Create a `.env` file in the root directory with the following variables:
 
 ```bash
-    DATABASE_URL=postgres://username:password@localhost:5432/database_name
-    CMC_API_KEY=your_coinmarketcap_api_key
-    HOST=localhost
-    SERVER_PORT=8080
+DATABASE_URL=postgres://username:password@localhost:5432/database_name
+CMC_API_KEY=your_coinmarketcap_api_key
+HOST=localhost
+SERVER_PORT=8080
 ```
 
 3. Start Docker
 
 ```bash
-   docker-compose up -d
+docker-compose up -d
 ```
 
 Stop Docker
 ```bash
-   docker-compose down
+docker-compose down
 ```
 
 4. Access the API
