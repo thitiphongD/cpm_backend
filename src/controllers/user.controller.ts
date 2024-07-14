@@ -1,5 +1,4 @@
 import { type Request, type Response } from "express";
-import { pool } from "../db/connection";
 import {
   checkUserExists,
   fetchPortfolioData,
@@ -9,7 +8,6 @@ import {
   updateQuantity,
 } from "../models/user";
 import {
-  sendGetPortfolioSuccess,
   sendUpdatePortfolioSuccess,
   sendServerError,
   sendAddCoinSuccess,
@@ -142,17 +140,6 @@ export const UpdatePortfolio = async (req: Request, res: Response) => {
       updateData,
     };
     sendUpdatePortfolioSuccess(res, result);
-  } catch (error) {
-    sendServerError(res);
-  }
-};
-
-export const GetAllUsers = async (req: Request, res: Response) => {
-  try {
-    const result = await pool.query("SELECT * FROM users");
-    res.status(200).json({
-      data: result.rows,
-    });
   } catch (error) {
     sendServerError(res);
   }

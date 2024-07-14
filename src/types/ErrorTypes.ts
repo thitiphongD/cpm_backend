@@ -9,6 +9,7 @@ export enum ErrorType {
   COIN_NOT_FOUND = "Coin not found",
   ADD_COIN_FAIL = "Add coin fail",
   UPDATE_PORT_FAIL = "Add coin fail",
+  COIN_OR_USER_NOT_FOUND = "Coin or User not found"
 }
 
 export enum SuccessType {
@@ -17,4 +18,5 @@ export enum SuccessType {
   COIN_SUCCESS = "Add coin success",
   PORT_SUCCESS = "Get Portfolio success",
   UPDATE_PORT_SUCCESS = "Portfolio update success",
+  DELETE_COIN_SUCCESS = "Delete coin success",
 }

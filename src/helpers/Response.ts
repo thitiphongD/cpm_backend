@@ -41,3 +41,11 @@ export const sendAddCoinSuccess = (res: Response) => {
 export const sendUpdatePortfolioSuccess = (res: Response, data: any) => {
   res.status(200).json({ message: SuccessType.UPDATE_PORT_SUCCESS, data: data });
 }
+
+export const notFoundUserOrCoin = (res: Response) => {
+  res.status(404).json({message : ErrorType.COIN_OR_USER_NOT_FOUND})
+}
+
+export const deleteCoinSuccess = (res: Response, data: any) => {
+  res.status(200).json({ message: SuccessType.DELETE_COIN_SUCCESS, data: data });
+}

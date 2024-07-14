@@ -38,3 +38,43 @@ export const addCoinUser = async (
     client.release();
   }
 };
+
+export const deleteCoinModel = async (crypto_id: number, username: number) => {
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+
+    const userQuery = 'SELECT id FROM users WHERE username = $1';
+    const userResult = await client.query(userQuery, [username]);
+
+    if (userResult.rowCount === 0) {
+      await client.query('ROLLBACK');
+      console.error('User not found');
+      return false;
+    }
+    
+    const user_id = userResult.rows[0].id;
+     const checkQuery = 'SELECT * FROM portfolio WHERE crypto_id = $1 AND user_id = $2';
+     const checkResult = await client.query(checkQuery, [crypto_id, user_id]);
+     
+     if (checkResult.rowCount === 0) {
+       await client.query('ROLLBACK');
+       console.error('Coin not found in portfolio');
+       return false;
+     }
+
+    const deleteQuery = 'DELETE FROM portfolio WHERE crypto_id = $1 AND user_id = $2';
+    const deleteResult = await client.query(deleteQuery, [crypto_id, user_id]);
+    
+    await client.query('COMMIT');
+    return deleteResult.rowCount;
+    
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error in deleteCoinModel:', error);
+    return false;
+  } finally {
+    client.release();
+  }
+}

@@ -1,12 +1,14 @@
 import { type Request, type Response } from "express";
 import dotenv from "dotenv";
 import {
+  deleteCoinSuccess,
+  notFoundUserOrCoin,
   sendApiKeyNotfound,
   sendCoinNotfound,
   sendServerError,
-  sendSuccess,
 } from "../helpers/Response";
-import { CoinDTO, CoinMarketCapAPIResponse } from "../interface/interface";
+import { CoinDTO } from "../interface/interface";
+import { deleteCoinModel } from "../models/coin";
 dotenv.config();
 const apiKey = process.env.CMC_API_KEY;
 
@@ -152,9 +154,27 @@ export const GetCoinsById = async (req: Request, res: Response) => {
     }
     res.json(data);
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error", error);
     sendServerError(res);
   }
 };
+
+export const DeleteCoinController = async (req: Request, res: Response) => {
+  const username = req.body.username;
+  const id = req.params.id;
+  const crypto_id = parseInt(id)
+
+  try {
+    const result = await deleteCoinModel(crypto_id, username);
+    if (result === false) {
+      return notFoundUserOrCoin(res);
+    }
+    return deleteCoinSuccess(res, result);
+  } catch (error) {
+    console.error('Error in delete coin', error);
+    return sendServerError(res);
+  }
+}
+
 
 
