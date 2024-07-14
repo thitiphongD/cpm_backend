@@ -1,3 +1,11 @@
+export enum API_URL {
+  ALL_COIN_LIST = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
+  COIN_LIST = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
+  COIN_INFO = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info",
+  COIN_USER = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",
+}
+
+
 export enum ErrorType {
   NOT_FOUND = "Not found",
   HACKER = "Hacker?",

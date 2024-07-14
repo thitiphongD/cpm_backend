@@ -1,11 +1,10 @@
 import { type Request, type Response } from "express";
 import {
-  checkUserExists,
-  fetchPortfolioData,
-  getUserAndID,
+  checkUserExistsModel,
+  getPortFolioModel,
+  getUserAndIdModel,
   loginModel,
   registerModel,
-  updateQuantity,
 } from "../models/user";
 import {
   sendUpdatePortfolioSuccess,
@@ -24,8 +23,8 @@ import {
   userNotFound,
 } from "../helpers/AuthResponse";
 
-import { ErrorType } from "../types/ErrorTypes";
-import { addCoinUserModel } from "../models/coin";
+import { ErrorType } from "../types/enum";
+import { addCoinModel, updateCoinModel } from "../models/coin";
 import { CoinDataMarketCapAPI, FetchCoinByID } from "./coin.controller";
 
 export const LoginController = async (req: Request, res: Response) => {
@@ -68,11 +67,11 @@ export const AddCoinUser = async (req: Request, res: Response) => {
   const { id, quantity, username } = req.body;
 
   try {
-    const user = await getUserAndID(username);
+    const user = await getUserAndIdModel(username);
     if (!user) {
       return userNotFound(res);
     }
-    await addCoinUserModel(id, quantity, user.id);
+    await addCoinModel(id, quantity, user.id);
     sendAddCoinSuccess(res);
   } catch (error) {
     sendServerError(res);
@@ -83,11 +82,11 @@ export const GetPortfolio = async (req: Request, res: Response) => {
   const username = req.body.username;
 
   try {
-    const user = await checkUserExists(username);
+    const user = await checkUserExistsModel(username);
     if (!user) {
       return userNotFound(res);
     }
-    const portfolio = await fetchPortfolioData(username);
+    const portfolio = await getPortFolioModel(username);
     const cryptoIds = portfolio.map((row: any) => row.crypto_id);
     const result = await CoinDataMarketCapAPI();
     const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
@@ -124,13 +123,12 @@ export const GetPortfolio = async (req: Request, res: Response) => {
 export const UpdatePortfolio = async (req: Request, res: Response) => {
   const { quantity, username } = req.body;
   const { id } = req.params;
-
   try {
-    const user = await getUserAndID(username);
+    const user = await getUserAndIdModel(username);
     if (!user) {
       return userNotFound(res);
     }
-    const updateData = await updateQuantity(quantity, username, +id);
+    const updateData = await updateCoinModel(quantity, username, +id);
     const result = {
       username,
       crypto_id: id,

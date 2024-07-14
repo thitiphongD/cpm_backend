@@ -1,5 +1,5 @@
 import { type Response } from "express";
-import { ErrorType, SuccessType } from "../types/ErrorTypes";
+import { ErrorType, SuccessType } from "../types/enum";
 
 export const sendServerError = (res: Response) => {
   res.status(500).json({ error: ErrorType.SERVER_ERROR });

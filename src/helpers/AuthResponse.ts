@@ -1,5 +1,5 @@
 import { type Response } from "express";
-import { ErrorType, SuccessType } from "../types/ErrorTypes";
+import { ErrorType, SuccessType } from "../types/enum";
 
 export const sendLoginSuccess = (res: Response, username: string) => {
   res.status(200).json({

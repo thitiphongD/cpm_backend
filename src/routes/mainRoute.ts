@@ -23,7 +23,6 @@ router.put("/portfolio/:id", UpdatePortfolio);
 router.delete("/portfolio/:id", DeleteCoinController);
 
 router.get("/coin/:id", GetCoin);
-
 router.get("/coins/:ids", GetCoinsById);
 router.get("/coins", CoinList);
 

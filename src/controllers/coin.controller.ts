@@ -8,15 +8,10 @@ import {
   sendServerError,
 } from "../helpers/Response";
 import { deleteCoinModel } from "../models/coin";
+import { API_URL } from "../types/enum";
 dotenv.config();
-const apiKey = process.env.CMC_API_KEY;
 
-enum API_URL {
-  ALL_COIN_LIST = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-  COIN_LIST = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-  COIN_INFO = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info",
-  COIN_USER = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",
-}
+const apiKey = process.env.CMC_API_KEY;
 
 export const CoinDataMarketCapAPI = async () => {
   const coinListURL = API_URL.ALL_COIN_LIST;
@@ -34,7 +29,7 @@ export const CoinDataMarketCapAPI = async () => {
     });
     
     if (!response.ok) {
-      throw new Error("Failed to fetch data from CoinMarketCap API");
+      throw new Error("Fail to fetch data from CoinMarketCap API");
     }
 
     const result = await response.json();
@@ -146,7 +141,7 @@ export const GetCoinsById = async (req: Request, res: Response) => {
     const data = await response.json();
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("API Error:", errorData);
+      console.error("API error:", errorData);
     }
     res.json(data);
   } catch (error) {
