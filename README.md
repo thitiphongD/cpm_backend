@@ -34,7 +34,12 @@ To get this project up and running on your local machine, follow these steps:
 3. Start Docker
 
 ```bash
-   docker-compose up
+   docker-compose up -d
+```
+
+Stop Docker
+```bash
+   docker-compose down
 ```
 
 4. Access the API
