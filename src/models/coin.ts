@@ -1,14 +1,14 @@
 import { pool } from "../db/connection";
 
 export const fetchCoinData = async (cryptoIds: string) => {
-  const coinsResponse = await fetch(`http://localhost:8080/coins/${cryptoIds}`);
-  if (!coinsResponse.ok) {
+  const response = await fetch(`http://localhost:8080/coins/${cryptoIds}`);
+  if (!response.ok) {
     throw new Error("Failed to fetch coin data");
   }
-  return coinsResponse.json();
+  return response.json();
 };
 
-export const addCoinUser = async (
+export const addCoinUserModel = async (
   id: number,
   quantity: number,
   user_id: number
@@ -50,7 +50,6 @@ export const deleteCoinModel = async (crypto_id: number, username: number) => {
 
     if (userResult.rowCount === 0) {
       await client.query('ROLLBACK');
-      console.error('User not found');
       return false;
     }
     
@@ -60,7 +59,6 @@ export const deleteCoinModel = async (crypto_id: number, username: number) => {
      
      if (checkResult.rowCount === 0) {
        await client.query('ROLLBACK');
-       console.error('Coin not found in portfolio');
        return false;
      }
 
@@ -72,7 +70,6 @@ export const deleteCoinModel = async (crypto_id: number, username: number) => {
     
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Error in deleteCoinModel:', error);
     return false;
   } finally {
     client.release();

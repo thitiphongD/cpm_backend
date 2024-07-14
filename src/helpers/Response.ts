@@ -7,8 +7,8 @@ export const sendServerError = (res: Response) => {
 
 export const notFound = (res: Response) => {
   res.status(404).json({
-    error: "Not Found",
-    message: "Hacker?",
+    error: ErrorType.NOT_FOUND,
+    message: ErrorType.HACKER,
   });
 };
 

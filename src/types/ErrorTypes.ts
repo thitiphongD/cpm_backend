@@ -1,4 +1,6 @@
 export enum ErrorType {
+  NOT_FOUND = "Not found",
+  HACKER = "Hacker?",
   SERVER_ERROR = "Server error",
   LOGIN_FAIL = "Username or Password Incorrect",
   PASSWORD_NOT_MATCH = "Passwords do not match!",

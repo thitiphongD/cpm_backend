@@ -14,8 +14,7 @@ CREATE TABLE portfolio (
 );
 
 INSERT INTO users (username, password)
-VALUES ('Daew', 'daew_pass')
-
+VALUES ('user_sample', 'user_pass')
 
 INSERT INTO portfolio (user_id, crypto_id, quantity)
 VALUES  (1, 1, 2.5)

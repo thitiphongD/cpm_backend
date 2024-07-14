@@ -7,7 +7,6 @@ import {
   sendCoinNotfound,
   sendServerError,
 } from "../helpers/Response";
-import { CoinDTO } from "../interface/interface";
 import { deleteCoinModel } from "../models/coin";
 dotenv.config();
 const apiKey = process.env.CMC_API_KEY;
@@ -19,8 +18,9 @@ enum API_URL {
   COIN_USER = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",
 }
 
-export const CoinDataMarketCapAPI = async (): Promise<CoinDTO[]> => {
+export const CoinDataMarketCapAPI = async () => {
   const coinListURL = API_URL.ALL_COIN_LIST;
+
   if (!apiKey) {
     throw new Error("API key not found");
   }
@@ -32,6 +32,7 @@ export const CoinDataMarketCapAPI = async (): Promise<CoinDTO[]> => {
         Accept: "application/json",
       },
     });
+    
     if (!response.ok) {
       throw new Error("Failed to fetch data from CoinMarketCap API");
     }
@@ -39,7 +40,7 @@ export const CoinDataMarketCapAPI = async (): Promise<CoinDTO[]> => {
     const result = await response.json();
     const ids = result.data.map((coin: any) => coin.id);
     const idsString = ids.join(",");
-    const coinInfo = await fetchCoinByID(idsString);
+    const coinInfo = await FetchCoinByID(idsString);
 
     result.data.forEach((coin: any) => {
       coin.logo = coinInfo.data[coin.id]?.logo;
@@ -58,12 +59,11 @@ export const CoinDataMarketCapAPI = async (): Promise<CoinDTO[]> => {
     }));
 
   } catch (error) {
-    console.error("Error in CoinDataMarketCapAPI:", error);
     throw error;
   }
 };
 
-export const fetchCoinByID = async (id: string): Promise<any> => {
+export const FetchCoinByID = async (id: string) => {
   const apiUrl = API_URL.COIN_INFO;
   const url = `${apiUrl}?id=${id}`;
 
@@ -109,7 +109,7 @@ export const GetCoin = async (req: Request, res: Response) => {
     if (!coinData) {
       return sendCoinNotfound(res);
     }
-    const coinInfo = await fetchCoinByID(id);
+    const coinInfo = await FetchCoinByID(id);
 
     const resultCoinData = {
       id: coinData.id,
@@ -147,14 +147,9 @@ export const GetCoinsById = async (req: Request, res: Response) => {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("API Error:", errorData);
-      throw new Error(
-        `Failed to fetch data: ${errorData.status?.error_message || "Unknown error"
-        }`,
-      );
     }
     res.json(data);
   } catch (error) {
-    console.error("Error", error);
     sendServerError(res);
   }
 };
@@ -171,7 +166,6 @@ export const DeleteCoinController = async (req: Request, res: Response) => {
     }
     return deleteCoinSuccess(res, result);
   } catch (error) {
-    console.error('Error in delete coin', error);
     return sendServerError(res);
   }
 }

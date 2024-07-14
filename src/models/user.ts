@@ -4,7 +4,7 @@ import { UserLogin, UserRegister } from "../interface/interface";
 export const loginModel = async (
   username: string,
   password: string,
-): Promise<UserLogin | null> => {
+) => {
   try {
     const query = {
       text: "SELECT * FROM users WHERE username = $1 AND password = $2",
@@ -17,7 +17,7 @@ export const loginModel = async (
     }
     return null;
   } catch (error) {
-    console.error("Error finding user:", error);
+    console.error("error login user:", error);
     throw error;
   }
 };
@@ -25,7 +25,7 @@ export const loginModel = async (
 export const registerModel = async (
   username: string,
   password: string,
-): Promise<UserRegister | null> => {
+) => {
   try {
     const checkQuery = {
       text: "SELECT * FROM users WHERE username = $1",
@@ -49,7 +49,7 @@ export const registerModel = async (
     }
     return null;
   } catch (error) {
-    console.error("Error registering user:", error);
+    console.error("error register", error);
     throw error;
   }
 };
@@ -77,8 +77,8 @@ export const checkUserExists = async (username: string) => {
     const result = await pool.query(query);
     return result.rows.length > 0;
   } catch (error) {
-    console.error("Error checking user:", error);
-    throw new Error("Error checking user");
+    console.error("error check user:", error);
+    throw new Error("error check user");
   }
 };
 
@@ -91,8 +91,8 @@ export const checkUserByID = async (username: string) => {
     const result = await pool.query(query);
     return result.rows[0];
   } catch (error) {
-    console.error("Error checking user:", error);
-    throw new Error("Error checking user");
+    console.error("error check user:", error);
+    throw new Error("error check user");
   }
 };
 
@@ -108,8 +108,8 @@ export const getUserAndID = async (username: string) => {
     }
     return result.rows[0];
   } catch (error) {
-    console.error("Error checking user:", error);
-    throw new Error("Error checking user");
+    console.error("error check user:", error);
+    throw new Error("error check user");
   }
 };
 

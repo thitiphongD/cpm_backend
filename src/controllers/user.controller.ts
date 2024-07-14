@@ -25,8 +25,8 @@ import {
 } from "../helpers/AuthResponse";
 
 import { ErrorType } from "../types/ErrorTypes";
-import { addCoinUser } from "../models/coin";
-import { CoinDataMarketCapAPI, CoinList, fetchCoinByID } from "./coin.controller";
+import { addCoinUserModel } from "../models/coin";
+import { CoinDataMarketCapAPI, FetchCoinByID } from "./coin.controller";
 
 export const LoginController = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -38,7 +38,6 @@ export const LoginController = async (req: Request, res: Response) => {
       sendLoginFail(res);
     }
   } catch (error) {
-    console.error(error);
     sendServerError(res);
   }
 };
@@ -60,7 +59,6 @@ export const RegisterController = async (req: Request, res: Response) => {
     if (error instanceof Error && error.message === ErrorType.USER_EXISTS) {
       userAlreadyExists(res);
     } else {
-      console.error(error);
       sendServerError(res);
     }
   }
@@ -74,27 +72,26 @@ export const AddCoinUser = async (req: Request, res: Response) => {
     if (!user) {
       return userNotFound(res);
     }
-    await addCoinUser(id, quantity, user.id);
+    await addCoinUserModel(id, quantity, user.id);
     sendAddCoinSuccess(res);
   } catch (error) {
-    console.error("Error in AddCoinUser:", error);
     sendServerError(res);
   }
 };
 
 export const GetPortfolio = async (req: Request, res: Response) => {
   const username = req.body.username;
-  
+
   try {
     const user = await checkUserExists(username);
     if (!user) {
       return userNotFound(res);
     }
-    const portfolio = await fetchPortfolioData(username);    
+    const portfolio = await fetchPortfolioData(username);
     const cryptoIds = portfolio.map((row: any) => row.crypto_id);
     const result = await CoinDataMarketCapAPI();
     const coinData = result.filter((coin: any) => cryptoIds.includes(coin.id));
-    const coinInfo = await fetchCoinByID(cryptoIds.join(','));
+    const coinInfo = await FetchCoinByID(cryptoIds.join(','));
 
     const resultPortfolio = coinData.map((coin: any) => {
       const portfolioItem = portfolio.find((item: any) => item.crypto_id === coin.id);
